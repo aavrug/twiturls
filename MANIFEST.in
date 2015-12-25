@@ -1,0 +1,3 @@
+include *.py
+include twit.cfg
+include README.rst
