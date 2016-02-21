@@ -4,7 +4,9 @@
 """
 
 #!/usr/bin/env python
-from twython import Twython
+import requests
+from requests_oauthlib import OAuth1
+#from twython import Twython
 import ConfigParser
 import re
 
@@ -24,9 +26,14 @@ def twitter_setup():
                 oauth_token=t_access_token,
                 oauth_token_secret=t_access_secret_token)
 
+def search(query, count):
+    auth = OAuth1('1bhCpN2RxQuAlKgv7EBZIQ', 'VUsMq4qoNKCWi7w5tTSsiqYLszR0ET24YsWpHXcLd0', '369725162-Pf1KIznOmYSnTxJZmqNf6cZuHqySjoYiGKCBg4EF', 'y7NpdlwUlzdbcEjJYJAN77pihc13jmvyoFv8jrL0H2YIo')
+    result = requests.get('https://api.twitter.com/1.1/search/tweets.json?q=%23'+query+'&count='+str(count), auth=auth)
+    return result.json()
+
 def get_links(hashtags, total=1):
     results = {}
-    twit = twitter_setup()
+    #twit = twitter_setup()
     #results = twit.search(q=hashtags, count=total)
     if hashtags == '':
         msg = 'You cannot enter a blank tag.'
@@ -34,8 +41,8 @@ def get_links(hashtags, total=1):
     tagsList = hashtags.strip().split(',')
     for tag in tagsList:
         tag = tag.strip()
-        result = twit.search(q=tag, count=total)
-    	key = tag.replace('#', '')
+        key = tag.replace('#', '')
+        result = search(key, count=total)
         results[key] = result
     display_links(results)
 
