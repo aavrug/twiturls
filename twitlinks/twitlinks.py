@@ -6,13 +6,12 @@
 #!/usr/bin/env python
 import requests
 from requests_oauthlib import OAuth1
-#from twython import Twython
 import ConfigParser
 import re
 
-def twitter_setup():
+def search(query, count):
     config = ConfigParser.ConfigParser()
-    cnfg = open('./twit.cfg')
+    cnfg = open('./twitlinks/twit.cfg')
     config.readfp(cnfg)
     config.read(cnfg)
 
@@ -21,20 +20,12 @@ def twitter_setup():
     t_access_token = config.get('global', 'access_token')
     t_access_secret_token = config.get('global', 'access_secret_token')
 
-    return Twython(app_key=t_app_key,
-                app_secret=t_app_secret_key,
-                oauth_token=t_access_token,
-                oauth_token_secret=t_access_secret_token)
-
-def search(query, count):
-    auth = OAuth1('1bhCpN2RxQuAlKgv7EBZIQ', 'VUsMq4qoNKCWi7w5tTSsiqYLszR0ET24YsWpHXcLd0', '369725162-Pf1KIznOmYSnTxJZmqNf6cZuHqySjoYiGKCBg4EF', 'y7NpdlwUlzdbcEjJYJAN77pihc13jmvyoFv8jrL0H2YIo')
+    auth = OAuth1(t_app_key, t_app_secret_key, t_access_token, t_access_secret_token)
     result = requests.get('https://api.twitter.com/1.1/search/tweets.json?q=%23'+query+'&count='+str(count), auth=auth)
     return result.json()
 
 def get_links(hashtags, total=1):
     results = {}
-    #twit = twitter_setup()
-    #results = twit.search(q=hashtags, count=total)
     if hashtags == '':
         msg = 'You cannot enter a blank tag.'
         return msg
